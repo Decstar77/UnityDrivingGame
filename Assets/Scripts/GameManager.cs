@@ -17,14 +17,16 @@ public class GameManager : MonoBehaviour {
 	private GameObject tail;
 	private float roadSize;
 
-	void Start () {
+	void Start() {
 		root = null;
 		tail = null;
 		playerCar = null;
-
-
+		if (PlayerPrefs.HasKey("seed"))
+			print(PlayerPrefs.GetString("seed"));
+		else
+			print("no key");
 		vBuilds = new VBuilds();
-		vBuilds.Init();
+		vBuilds.Init(10, 10, 50, PlayerPrefs.GetString("seed"));
 
 		roadManager = new RoadManager();
 		roadManager.Initialize(StraightRoadPrefab, TurnRoadPrefab);
@@ -59,14 +61,14 @@ public class GameManager : MonoBehaviour {
 		playerCar.transform.rotation = root.transform.rotation;
 
 	}
-	private void SetUpRootRoad(Vector2 []positions)
+	private void SetUpRootRoad(Vector2[] positions)
 	{
 		root = Instantiate(StartRoad);
 		root.name = "Root";
-		root.transform.position = positions[0] * roadSize;		
+		root.transform.position = positions[0] * roadSize;
 		root.transform.rotation = roadManager.GetTrueStraightRoadDirection(positions[0], positions[1]);
 	}
-	private void SetUpTailRoad(Vector2 []positions)
+	private void SetUpTailRoad(Vector2[] positions)
 	{
 		int endIndex = positions.Length - 1;
 		tail = Instantiate(FinsihRoad);
@@ -74,7 +76,7 @@ public class GameManager : MonoBehaviour {
 		tail.transform.position = positions[endIndex] * roadSize;
 		tail.transform.rotation = roadManager.GetTrueStraightRoadDirection(positions[endIndex], positions[endIndex - 1]);
 	}
-	private void SetUpSingleTrack(Vector2 []positions)
+	private void SetUpSingleTrack(Vector2[] positions)
 	{
 		for (int i = 1; i < positions.Length - 1; i++)
 		{
@@ -91,6 +93,10 @@ public class GameManager : MonoBehaviour {
 	public GameObject GetPlayerCar()
 	{
 		return playerCar;
+	}
+	public void AccelerateCar(bool isDown)
+	{
+		playerCar.GetComponent<CarController>().AccelerateFoward(isDown);
 	}
 
 }

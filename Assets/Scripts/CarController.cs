@@ -12,7 +12,6 @@ public class CarController : MonoBehaviour
 	[SerializeField] private float DriftFactorSlip = 1f;
 	[SerializeField] private float MaxStick = 2.5f;
 	[SerializeField] private float UndersteerValue = 5;
-	[SerializeField] private bool SteeringRealism = false;
 
 
 
@@ -30,7 +29,7 @@ public class CarController : MonoBehaviour
 	float vertInp = 0;
 	float hortInp = 0;
 	private Rigidbody2D ri;
-
+	private bool accelerteButtonStatus = false;
 	void Start()
 	{
 		TurnDirection = VelocityDirection = 0;
@@ -43,26 +42,49 @@ public class CarController : MonoBehaviour
 
 	private void FixedUpdate()
 	{
-		print(JoyDirection);
-		vertInp = Input.GetAxis("Vertical");
-		hortInp = Input.GetAxis("Horizontal");
+		float maxVelo = 40;
+		Vector2 dir = new Vector2(JoyDirection.x, JoyDirection.y);
+		Vector2 pos = new Vector2(transform.position.x, transform.position.y);
 
-		vertInp = (JoyDirection.y);
-		hortInp = (JoyDirection.x);
+		float toAngle = ((Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg)) - 90;
+		float fromAngle = transform.rotation.eulerAngles.z;
 
+		float netAngle = toAngle -fromAngle;
+		if (netAngle == -360 || netAngle == 360)
+			netAngle = 0;
+		if (ri.velocity.magnitude > 5)
+		{
+			ri.velocity = Vector2.ClampMagnitude(ri.velocity, 5);
+		}
+		//print("To" + toAngle);
+
+		//print(netAngle);
+		//netAngle *= Normailze(ri.velocity.magnitude, 0, 25);
+		//print(toAngle);
+		//fromAngle = Mathf.Lerp(fromAngle, toAngle, 0.99f);
+		if (!accelerteButtonStatus)
+			vertInp = Input.GetAxis("Vertical");
+		else
+			vertInp = 1;
 		ri.AddRelativeForce(Vector2.up * SpeedFactor * vertInp);
 		//////////////////Do Steering //////////////
 		vertInp = Mathf.Clamp(vertInp, -0.3f, 1);
 		float tf = Mathf.Lerp(0, TorgueFactor, ri.velocity.magnitude / UndersteerValue);
-		if (vertInp < 0 && SteeringRealism == true)
-			ri.angularVelocity = (tf * hortInp);
-		else
-			ri.angularVelocity = (tf * hortInp * -1);
+		//Debug.Log(vertInp);
+
+		float lep = UtilityFunction.Normailze(ri.velocity.magnitude, 0, 5);
+		print(lep * netAngle);
+		if (dir != Vector2.zero)
+			transform.Rotate(new Vector3(0, 0, netAngle * lep));
 		////////////////////Do drift cals///////////////
 		float driftFactor = DriftFactorStick;
 		if (SideWaysVelocity().magnitude > MaxStick)
 			driftFactor = DriftFactorSlip;
 		ri.velocity = ForwardVelocity() + SideWaysVelocity() * driftFactor;
+
+
+
+
 	}
 
 	private Vector2 ForwardVelocity()
@@ -90,10 +112,12 @@ public class CarController : MonoBehaviour
 		return VelocityAmount;
 	}
 
-
 	public void SetJoyStickDirection(Vector3 vec)
 	{
 		JoyDirection = vec;
 	}
-
+	public void AccelerateFoward(bool isDown)
+	{
+		this.accelerteButtonStatus = isDown;
+	}
 }

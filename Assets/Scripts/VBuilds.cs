@@ -14,7 +14,7 @@ public class VBuilds
 	 -Choosing direction is very biased. FIX!!
 	*/
 
-
+	private string seed = "";
 	private uint RoadCountWidth = 10;
 	private uint RoadCountHeight = 10;
 	private uint PathLength = 50;
@@ -45,6 +45,7 @@ public class VBuilds
 			activeEdges = 0;
 		}
 	}
+	private System.Random rand;
 	//AllVerts
 	private Vertices[] verts; 
 	//Verts in the path
@@ -159,12 +160,15 @@ public class VBuilds
 			pathLength = (Height * Width) / 2;
 		}
 	}
-	public void Init(uint Height = 10, uint Width = 10, uint pathLength = 50)
+	public void Init(uint Height = 10, uint Width = 10, uint pathLength = 50, string seed = "")
 	{
 		//Initializer function
+		this.seed = seed;
 		RoadCountWidth = Width;
 		RoadCountHeight = Height;
 		PathLength = pathLength;
+		if (seed == "") { seed = System.DateTime.Now.ToString(); }
+		rand = new System.Random(seed.GetHashCode());
 		CheckSize(ref RoadCountHeight, ref RoadCountWidth, ref PathLength);
 		verts = new Vertices[RoadCountWidth * RoadCountHeight];
 		vertsPath = new Vertices[PathLength];
@@ -303,7 +307,8 @@ public class VBuilds
 		//Auto chooses next vert from lastVert will necessary calculations
 		if (pathVertAmount >= PathLength)
 			return;
-		int dir = Random.Range(0, lastVert.degree);
+		int dir = rand.Next(0, lastVert.degree);
+		//int dir = Random.Range(0, lastVert.degree);
 		int index = lastVert.edge[dir].indexTo;
 		int incDir = 0;
 		while (verts[index].active == true)

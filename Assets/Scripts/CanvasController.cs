@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.SceneManagement;
 public class CanvasController : MonoBehaviour {
 
 	private GameObject obj_fixedJoystick;
@@ -39,5 +39,8 @@ public class CanvasController : MonoBehaviour {
 			carController = gameManager.GetPlayerCar().GetComponent<CarController>();
 		}
 	}
-
+	public void MoveToSence(string scene)
+	{
+		SceneManager.LoadScene(scene);
+	}
 }
