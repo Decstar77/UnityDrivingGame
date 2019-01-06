@@ -94,8 +94,7 @@ MonoBehaviour:
   DriftFactorStick: 0.8
   DriftFactorSlip: 0.8
   MaxStick: 5
-  UndersteerValue: 2
-  SteeringRealism: 0
+  UndersteerValue: 20
 --- !u!212 &212270462325910920
 SpriteRenderer:
   m_ObjectHideFlags: 1

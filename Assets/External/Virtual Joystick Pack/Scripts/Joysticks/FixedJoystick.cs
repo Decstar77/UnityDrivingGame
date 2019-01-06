@@ -30,7 +30,7 @@ public class FixedJoystick : Joystick
 
 	public Vector3 GetJoyStickDirection()
 	{
-		return handle.anchoredPosition.normalized;
+		return handle.anchoredPosition;
 	}
 
 }

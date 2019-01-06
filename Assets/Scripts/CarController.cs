@@ -15,67 +15,56 @@ public class CarController : MonoBehaviour
 
 
 
-	private Vector3 JoyDirection;
-	private float TurningRight;
-	private float TurningLeft;
-	private float TurnDirection;
-	private float TurnAmount;
-	
-	private float Acceleration;
-	private float Brake;
-	private float VelocityDirection;
-	private float VelocityAmount;
+	private Vector3 JoyStickDirection;
+
 
 	float vertInp = 0;
 	float hortInp = 0;
 	private Rigidbody2D ri;
-	private bool accelerteButtonStatus = false;
+	
+
+
 	void Start()
 	{
-		TurnDirection = VelocityDirection = 0;
-		TurnAmount = VelocityAmount = 0;
 		ri = GetComponent<Rigidbody2D>();
-		ri.gravityScale = 0;
-		
+		ri.gravityScale = 0;	
 
 	}
 
 	private void FixedUpdate()
 	{
-		float maxVelo = 40;
-		Vector2 dir = new Vector2(JoyDirection.x, JoyDirection.y);
-		Vector2 pos = new Vector2(transform.position.x, transform.position.y);
+		
+		Vector2 direction = new Vector2(JoyStickDirection.x, JoyStickDirection.y);
+		float acceleration = UtilityFunction.Normailze(JoyStickDirection.magnitude, 0, 100);
+		direction.Normalize();
+		
 
-		float toAngle = ((Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg)) - 90;
+
+
+
+		float toAngle = ((Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg)) - 90;
 		float fromAngle = transform.rotation.eulerAngles.z;
-
 		float netAngle = toAngle -fromAngle;
 		if (netAngle == -360 || netAngle == 360)
 			netAngle = 0;
-		if (ri.velocity.magnitude > 5)
+
+
+
+
+
+
+		ClampVelocity(5);
+		ri.AddRelativeForce(Vector2.up * SpeedFactor * acceleration);
+		if (direction != Vector2.zero)
 		{
-			ri.velocity = Vector2.ClampMagnitude(ri.velocity, 5);
+			print("adding rotation");
+			transform.Rotate(new Vector3(0, 0, netAngle));
 		}
-		//print("To" + toAngle);
-
-		//print(netAngle);
-		//netAngle *= Normailze(ri.velocity.magnitude, 0, 25);
-		//print(toAngle);
-		//fromAngle = Mathf.Lerp(fromAngle, toAngle, 0.99f);
-		if (!accelerteButtonStatus)
-			vertInp = Input.GetAxis("Vertical");
 		else
-			vertInp = 1;
-		ri.AddRelativeForce(Vector2.up * SpeedFactor * vertInp);
+		{
+			ri.angularVelocity = 0;
+		}
 		//////////////////Do Steering //////////////
-		vertInp = Mathf.Clamp(vertInp, -0.3f, 1);
-		float tf = Mathf.Lerp(0, TorgueFactor, ri.velocity.magnitude / UndersteerValue);
-		//Debug.Log(vertInp);
-
-		float lep = UtilityFunction.Normailze(ri.velocity.magnitude, 0, 5);
-		print(lep * netAngle);
-		if (dir != Vector2.zero)
-			transform.Rotate(new Vector3(0, 0, netAngle * lep));
 		////////////////////Do drift cals///////////////
 		float driftFactor = DriftFactorStick;
 		if (SideWaysVelocity().magnitude > MaxStick)
@@ -95,29 +84,16 @@ public class CarController : MonoBehaviour
 	{
 		return transform.right * Vector2.Dot(ri.velocity, transform.right);
 	}
-	private float DoSteeringInput()
+	private void ClampVelocity(float MaxSpeed)
 	{
-		TurnDirection = TurningRight - TurningLeft;
-		TurnAmount = Mathf.Lerp(TurnAmount, TurnDirection, 0.2f);
-		if (TurnAmount == -1 || TurnAmount == 1)
-			return TurnAmount;
-		return TurnAmount;
+		if (ri.velocity.magnitude > MaxSpeed)
+		{
+			ri.velocity = Vector2.ClampMagnitude(ri.velocity, MaxSpeed);
+		}
 	}
-	private float DoAccelerationInput()
+	public void SetJoyStickInput(Vector3 vec)
 	{
-		VelocityDirection = Acceleration - Brake;
-		VelocityAmount = Mathf.Lerp(VelocityAmount, VelocityDirection, 0.2f);
-		if (VelocityAmount == -1 || VelocityAmount == 1)
-			return VelocityAmount;
-		return VelocityAmount;
+		JoyStickDirection = vec;
 	}
-
-	public void SetJoyStickDirection(Vector3 vec)
-	{
-		JoyDirection = vec;
-	}
-	public void AccelerateFoward(bool isDown)
-	{
-		this.accelerteButtonStatus = isDown;
-	}
+	
 }

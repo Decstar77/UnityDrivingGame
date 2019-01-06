@@ -28,6 +28,5 @@ public class ButtonScript : MonoBehaviour, IPointerDownHandler, IPointerUpHandle
 
 	void Update()
 	{ 
-		gameManager.AccelerateCar(isDown);
 	}
 }

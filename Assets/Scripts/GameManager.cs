@@ -94,9 +94,6 @@ public class GameManager : MonoBehaviour {
 	{
 		return playerCar;
 	}
-	public void AccelerateCar(bool isDown)
-	{
-		playerCar.GetComponent<CarController>().AccelerateFoward(isDown);
-	}
+
 
 }

@@ -10,7 +10,7 @@ public class CanvasController : MonoBehaviour {
 	private CarController carController;
 
 	void Start () {
-		obj_fixedJoystick = transform.Find("Fixed Joystick").gameObject;
+		obj_fixedJoystick = transform.Find("Fixed Joystick") == null ? null :  transform.Find("Fixed Joystick").gameObject;
 		if (obj_fixedJoystick == null)
 		{
 			print("Cannot find JoyStick");
@@ -23,7 +23,7 @@ public class CanvasController : MonoBehaviour {
 	{
 		if (gameManager != null && carController != null)
 		{
-			carController.SetJoyStickDirection(scr_fixedJoystick.GetJoyStickDirection());
+			carController.SetJoyStickInput(scr_fixedJoystick.GetJoyStickDirection());
 		}
 	}
 
