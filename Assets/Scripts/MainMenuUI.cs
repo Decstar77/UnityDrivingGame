@@ -12,8 +12,9 @@ public class MainMenuUI : MonoBehaviour {
 	private ArrayList childrenInActiveCanas;
 	private bool moveCanvas = false;
 	void Start()
-	{	
-		
+	{
+
+
 		if (canvases.Length < 0)
 			return;
 

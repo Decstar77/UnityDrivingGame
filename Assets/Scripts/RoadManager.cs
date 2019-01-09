@@ -23,7 +23,7 @@ public class RoadManager
 	public GameObject NextRoadDirection(Vector2 ResultantDirectionOfNeighbours)
 	{
 		GameObject temp = GetRoadType(ResultantDirectionOfNeighbours);
-		temp.transform.rotation = GetTureTurnRoadDirection(ResultantDirectionOfNeighbours);
+		temp.transform.rotation = GetTrueTurnRoadDirection(ResultantDirectionOfNeighbours);
 
 		return temp;
 	}
@@ -33,7 +33,7 @@ public class RoadManager
 		{
 			return GetTrueStraightRoadDirection(Center, Next);
 		}
-		return GetTureTurnRoadDirection(ResultantDirectionOfNeighbours);
+		return GetTrueTurnRoadDirection(ResultantDirectionOfNeighbours);
 	}
 	public Quaternion GetTrueStraightRoadDirection(Vector2 Center, Vector2 Next)
 	{
@@ -49,7 +49,72 @@ public class RoadManager
 		else
 			return Quaternion.Euler(0, 0, -90);
 	}
-	public Quaternion GetTureTurnRoadDirection(Vector2 ResultantDirectionOfNeighbours)
+	public Quaternion GetTrueStraightRoadDirection(Vector2 ResultantDirectionOfNeighbours)
+	{
+		if (ResultantDirectionOfNeighbours == Vector2.zero)
+		{
+			Debug.Log("ResultantDirectionOfNeighbours is zero");
+			return Quaternion.Euler(0, 0, 0);
+		}
+		if (ResultantDirectionOfNeighbours == new Vector2(1, 0))
+		{
+			return Quaternion.Euler(0, 0, -90);
+		}
+		if (ResultantDirectionOfNeighbours == new Vector2(-1, 0))
+		{
+			return Quaternion.Euler(0, 0, 90);
+		}
+		if (ResultantDirectionOfNeighbours == new Vector2(0, 1))
+		{
+			return Quaternion.Euler(0, 0, 0);
+		}
+		if (ResultantDirectionOfNeighbours == new Vector2(0, -1))
+		{
+			return Quaternion.Euler(0, 0, 180);
+		}
+		return Quaternion.Euler(-1, -1, -1);
+	}
+	public GameObject GetRoadType(Vector2 ResultantDirectionOfNeighbours)
+	{
+		if (ResultantDirectionOfNeighbours == new Vector2(0, 0))
+			return MonoBehaviour.Instantiate(StraightRoadPrefab);
+		return MonoBehaviour.Instantiate(TurnRoadPrefab);
+	}
+	public Quaternion GetTrueTurnRoadDirectionInverse(Vector2 ResultantDirectionOfNeighbours)
+	{
+		if (ResultantDirectionOfNeighbours == Vector2.zero)
+		{
+			Debug.Log("Resultant vector is zero, with no addtional paramters");
+			return Quaternion.Euler(-1, -1, -1);
+		}
+		//0
+		//0-0
+		if (ResultantDirectionOfNeighbours == new Vector2(1, 1))
+		{
+			return Quaternion.Euler(0, 0, -90);
+		}
+		//0-0
+		//0
+		if (ResultantDirectionOfNeighbours == new Vector2(1, -1))
+		{			
+			return Quaternion.Euler(0, 0, 180);
+		}
+		//0-0
+		//  0
+		if (ResultantDirectionOfNeighbours == new Vector2(-1, -1))
+		{
+			return Quaternion.Euler(0, 0, 90);
+		}
+		//  0
+		//0-0
+		if (ResultantDirectionOfNeighbours == new Vector2(-1, 1))
+		{
+			return Quaternion.Euler(0, 0, 0);
+		}
+		//0-0-0
+		return Quaternion.Euler(-1, -1, -1);
+	}
+	public Quaternion GetTrueTurnRoadDirection(Vector2 ResultantDirectionOfNeighbours)
 	{
 		if (ResultantDirectionOfNeighbours == Vector2.zero)
 		{
@@ -83,12 +148,5 @@ public class RoadManager
 		//0-0-0
 		return Quaternion.Euler(-1, -1, -1);
 	}
-	public GameObject GetRoadType(Vector2 ResultantDirectionOfNeighbours)
-	{
-		if (ResultantDirectionOfNeighbours == new Vector2(0, 0))
-			return MonoBehaviour.Instantiate(StraightRoadPrefab);
-		return MonoBehaviour.Instantiate(TurnRoadPrefab);
-	}
-
 
 }

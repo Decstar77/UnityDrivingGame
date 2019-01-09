@@ -576,7 +576,33 @@ public class VBuilds
 			}
 		}
 		return rVerts;
-	}                                                    
+	}
+	public Vertices[] GetActiveAdjacentVerts(Vertices vert)
+	{
+		Vertices[] temp = new Vertices[vert.activeEdges];
+		int count = 0;
+		for (int i = 0; i < vert.degree; i++)
+		{
+			int index = vert.edge[i].indexTo;
+			Vertices adjVert = GetVert(index);
+			if (adjVert.active)
+				temp[count++] = adjVert;
+		}
+		return temp;
+	}
+	public Vertices[] GetInactiveAdjacentVerts(Vertices vert)
+	{
+		Vertices[] temp = new Vertices[vert.activeEdges];
+		int count = 0;
+		for (int i = 0; i < vert.degree; i++)
+		{
+			int index = vert.edge[i].indexTo;
+			Vertices adjVert = GetVert(index);
+			if (!adjVert.active)
+				temp[count++] = adjVert;
+		}
+		return temp;
+	}
 	public Vector2[] GetPositionOfAllVerts()
 	{
 		uint size = RoadCountWidth * RoadCountHeight;
@@ -593,6 +619,30 @@ public class VBuilds
 		for (int i = 0; i < pathVertAmount; i++)
 		{
 			temp[i] = vertsPath[i].pos;
+		}
+		return temp;
+	}
+	public Vector2[] GetPositionOfActiveVerts()
+	{
+		Vector2[] temp = new Vector2[activeVertAmount];
+		int tempCount = 0;
+		for (int i = 0; i < verts.Length; i++)
+		{
+			if (verts[i].active)			
+				temp[tempCount++] = verts[i].pos;
+
+
+		}
+		return temp;
+	}
+	public Vector2[] GetPositionOfInActiveVerts()
+	{
+		Vector2[] temp = new Vector2[RoadCountWidth * RoadCountHeight - activeVertAmount];
+		int tempCount = 0;
+		for (int i = 0; i < verts.Length; i++)
+		{
+			if (!verts[i].active)
+				temp[tempCount++] = verts[i].pos;
 		}
 		return temp;
 	}

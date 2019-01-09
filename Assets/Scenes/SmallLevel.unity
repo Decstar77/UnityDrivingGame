@@ -495,13 +495,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51878c3ab399e3244970a23e5faf7cec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PlayerCar: {fileID: 1982280604842920, guid: 38be993d4f724904eb598e621955f3d9, type: 2}
-  StraightRoadPrefab: {fileID: 1222216840771936, guid: 76d496d7e671ace458eac89285c97b22,
-    type: 2}
-  TurnRoadPrefab: {fileID: 1055634339643554, guid: d9fb84306d0477a44b9dea52e23026b4,
-    type: 2}
-  StartRoad: {fileID: 1638821784046498, guid: 1ecabe7e0085c674aae5ba164d16a165, type: 2}
-  FinsihRoad: {fileID: 1517757019207522, guid: d3589783a26008141b4e7fad4c3eeff4, type: 2}
 --- !u!1001 &569567058
 Prefab:
   m_ObjectHideFlags: 0
